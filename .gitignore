@@ -1,0 +1,13 @@
+build/
+# Official BepInEx extract for dist bundling (run scripts/Sync-BepInExRuntimePack.ps1)
+packaging/bepinex-runtime/
+dist/
+bin/
+obj/
+.vs/
+*.user
+Directory.Build.props.user
+# Local game path — never commit (use Directory.Build.props.example)
+Directory.Build.props
+.env
+.env.*

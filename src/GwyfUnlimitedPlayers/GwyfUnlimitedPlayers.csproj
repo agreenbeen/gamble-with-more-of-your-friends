@@ -1,0 +1,104 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Set GameManaged via Directory.Build.props (see Directory.Build.props.example), -p:GameManaged=..., or build.ps1 with $env:GWYF_MANAGED -->
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>10</LangVersion>
+    <Nullable>enable</Nullable>
+    <RootNamespace>GwyfUnlimitedPlayers</RootNamespace>
+    <AssemblyName>GwyfUnlimitedPlayers</AssemblyName>
+    <Version>1.0.0</Version>
+    <Description>Raises Steam lobby and Mirror connection caps for Gamble With Your Friends (host).</Description>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <!-- Output next to project for easy copy to BepInEx/plugins -->
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <OutputPath>..\..\build\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HarmonyX" Version="2.10.2" />
+  </ItemGroup>
+
+  <Target Name="VerifyGameManaged" BeforeTargets="ResolveAssemblyReferences">
+    <PropertyGroup>
+      <_GameMirror>$(GameManaged)\Mirror.dll</_GameMirror>
+      <_GameManagedTrimmed>$([System.String]::Copy('$(GameManaged)').Trim())</_GameManagedTrimmed>
+    </PropertyGroup>
+    <Error
+      Condition="'$(_GameManagedTrimmed)'==''"
+      Text="GameManaged is empty. Pass a full path, e.g. -p:GameManaged=&quot;C:\Program Files (x86)\Steam\steamapps\common\Gamble With Your Friends\Gamble With Your Friends_Data\Managed&quot; (see README)." />
+    <Error
+      Condition="!Exists('$(_GameMirror)')"
+      Text="Could not find game assemblies at GameManaged=&quot;$(GameManaged)&quot; (expected Mirror.dll at $(_GameMirror)). The game may be on a secondary Steam library (not under Program Files (x86)\Steam). From repo root run: .\scripts\Find-GwyfManaged.ps1 — then: dotnet build -c Release -p:GameManaged=&quot;PATH_IT_PRINTS&quot;. Or Steam → game → Manage → Browse local files → open Gamble With Your Friends_Data\Managed." />
+  </Target>
+
+  <ItemGroup>
+    <!-- BepInEx 5.4.x API (LGPL-2.1). Vendored compile ref: see lib/README.md -->
+    <Reference Include="BepInEx">
+      <HintPath>..\..\lib\BepInEx\BepInEx.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Mirror">
+      <HintPath>$(GameManaged)\Mirror.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(GameManaged)\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>$(GameManaged)\UnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="com.rlabrecque.steamworks.net">
+      <HintPath>$(GameManaged)\com.rlabrecque.steamworks.net.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- Testing drop: merge dist/BepInEx into the game folder next to the .exe -->
+  <PropertyGroup>
+    <RepoRoot>$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)\..\..'))</RepoRoot>
+    <DistDir>$(RepoRoot)\dist</DistDir>
+    <DistPluginsDir>$(DistDir)\BepInEx\plugins</DistPluginsDir>
+    <DistThunderstoreDir>$(DistDir)\thunderstore</DistThunderstoreDir>
+    <!-- Full mod bundle: run scripts/Sync-BepInExRuntimePack.ps1 (or Pack-Dist.ps1) to populate -->
+    <BepInExRuntimePack>$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)\..\..\packaging\bepinex-runtime'))</BepInExRuntimePack>
+  </PropertyGroup>
+  <ItemGroup>
+    <DistDocFiles Include="$(RepoRoot)\INSTALL.md" />
+    <DistDocFiles Include="$(RepoRoot)\docs\VALIDATION.md" />
+    <DistDocFiles Include="$(RepoRoot)\docs\TARGETS.md" />
+    <DistThunderstoreFiles Include="$(RepoRoot)\thunderstore\manifest.json" />
+  </ItemGroup>
+  <Target Name="CopyPluginToDist" AfterTargets="Build">
+    <PropertyGroup>
+      <_HasBepInExRuntime>false</_HasBepInExRuntime>
+      <_HasBepInExRuntime Condition="Exists('$(BepInExRuntimePack)\winhttp.dll')">true</_HasBepInExRuntime>
+    </PropertyGroup>
+    <ItemGroup>
+      <_RuntimeRootFiles Include="$(BepInExRuntimePack)\*.*" />
+      <_RuntimeDoorstopVer Include="$(BepInExRuntimePack)\.doorstop_version" Condition="Exists('$(BepInExRuntimePack)\.doorstop_version')" />
+      <_RuntimeBepInExTree Include="$(BepInExRuntimePack)\BepInEx\**\*.*" />
+    </ItemGroup>
+    <Warning
+      Code="GWYF001"
+      Text="packaging\bepinex-runtime\ is missing (expected winhttp.dll). Run scripts\Sync-BepInExRuntimePack.ps1 or scripts\Pack-Dist.ps1 for a full install bundle in dist\. Plugin DLL and docs are still being copied."
+      Condition="'$(_HasBepInExRuntime)'!='true'" />
+    <MakeDir Directories="$(DistDir);$(DistPluginsDir);$(DistThunderstoreDir)" />
+    <Copy
+      SourceFiles="@(_RuntimeRootFiles);@(_RuntimeDoorstopVer)"
+      DestinationFolder="$(DistDir)"
+      SkipUnchangedFiles="true"
+      Condition="'$(_HasBepInExRuntime)'=='true'" />
+    <Copy
+      SourceFiles="@(_RuntimeBepInExTree)"
+      DestinationFiles="@(_RuntimeBepInExTree->'$(DistDir)\BepInEx\%(RecursiveDir)%(Filename)%(Extension)')"
+      SkipUnchangedFiles="true"
+      Condition="'$(_HasBepInExRuntime)'=='true'" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFiles="$(DistPluginsDir)\$(TargetFileName)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(DistDocFiles)" DestinationFolder="$(DistDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(DistThunderstoreFiles)" DestinationFolder="$(DistThunderstoreDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(RepoRoot)\packaging\QUICKSTART.dist.txt" DestinationFiles="$(DistDir)\QUICKSTART.txt" SkipUnchangedFiles="true" />
+  </Target>
+</Project>

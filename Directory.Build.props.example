@@ -1,0 +1,10 @@
+<!--
+  Optional: copy to Directory.Build.props to set GameManaged for all builds,
+  or pass once: dotnet build -p:GameManaged="...\Gamble With Your Friends_Data\Managed"
+-->
+<Project>
+  <PropertyGroup>
+    <!-- Full path only — folder must contain Mirror.dll. Replace with your install (Steam → Browse local files → Gamble With Your Friends_Data\Managed). -->
+    <GameManaged>C:\Program Files (x86)\Steam\steamapps\common\Gamble With Your Friends\Gamble With Your Friends_Data\Managed</GameManaged>
+  </PropertyGroup>
+</Project>
