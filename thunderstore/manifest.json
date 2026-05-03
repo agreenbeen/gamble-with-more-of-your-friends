@@ -2,6 +2,6 @@
   "name": "GWYF_Unlimited_Players",
   "version_number": "1.0.0",
   "website_url": "https://github.com/agreenbeen/gamble-with-more-of-your-friends",
-  "description": "Raises Steam lobby and Mirror max connections so more than 6 players can share a lobby (host). Default 12, max 16.",
+  "description": "HOST-ONLY: only the lobby host installs this — joiners can stay vanilla and still play in a bigger lobby. Raises Steam lobby size and Mirror maxConnections (default 12 players, up to 16).",
   "dependencies": []
 }

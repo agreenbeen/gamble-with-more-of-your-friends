@@ -1,5 +1,7 @@
 # Patch target map (Gamble With Your Friends)
 
+**Deployment:** patches run on the **host** client (BepInEx + plugin). Joining players do not need these assemblies patched locally for the host’s lobby cap to apply.
+
 Reverse engineering used **ASCII string extraction** from the game’s managed assemblies plus `ScriptingAssemblies.json` / `RuntimeInitializeOnLoads.json`. No dnSpy run in-repo; validate signatures locally if a game update breaks patches.
 
 ## Stack

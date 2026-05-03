@@ -1,13 +1,15 @@
 # Install guide — GWYF Unlimited Players
 
-This mod raises the **Steam lobby member limit** and **Mirror connection cap** in *Gamble With Your Friends* so the **host** can have more than the default lobby size (configurable **2–16** players, default **12**).
+**Host-only mod:** the **person who creates the lobby** installs BepInEx + this plugin. **Joiners do not need the mod** for the larger lobby to work — they can stay on a **vanilla** game install. (Optional: clients can install it too if they also want to **host** bigger lobbies themselves.)
+
+This mod raises the **Steam lobby member limit** and **Mirror connection cap** in *Gamble With Your Friends* so that host can run above the default lobby size (configurable **2–16** players, default **12**).
 
 ## Who needs what
 
 | Role | Install this mod? |
 |------|-------------------|
 | **Host** (creates the lobby) | **Yes** — required for the higher cap. |
-| **Clients** (join only) | **No** for the cap to apply; optional if you want identical tooling. |
+| **Clients** (join only) | **No** — vanilla clients are supported; optional only if you want the same tooling or to host your own modded lobbies. |
 
 ## Prerequisites
 

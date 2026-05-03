@@ -1,11 +1,13 @@
 # Validation matrix (manual)
 
-Automated multiplayer tests were **not** executed in CI (no game clients / no .NET SDK in the agent sandbox). Run these locally after installing BepInEx and this plugin on the **host only** (per product plan).
+**Host-only:** install BepInEx + this mod on the **host** machine only. **Clients** under test should be **vanilla** unless you are explicitly checking optional client installs.
+
+Automated multiplayer tests were **not** executed in CI (no game clients / no .NET SDK in the agent sandbox). Run these locally after installing on the **host**.
 
 ## Prerequisites
 
-- BepInEx 5.x for **Mono** Unity, extracted into the game folder.
-- `GwyfUnlimitedPlayers.dll` in `BepInEx/plugins/`.
+- BepInEx 5.x for **Mono** Unity, on the **host’s** game folder.
+- Host: `GwyfUnlimitedPlayers.dll` in `BepInEx/plugins/`.
 - Config: `BepInEx/config/agreenbeen.gwyf.unlimited_players.cfg` — set `MaxPlayers` as needed (default **12**, allowed **2–16**).
 
 ## Quick solo smoke test (no extra players)
@@ -45,6 +47,6 @@ Steps 3–4 are enough for a **smoke test**. The table below is for **real** cap
 
 ## If something fails
 
-1. Confirm **host** has the mod; clients vanilla is expected for v1.
+1. **Host-only check:** the **host** must have the mod; **vanilla clients** are the expected happy path (repro that before assuming joiners need installs).
 2. Open `Assembly-CSharp` in dnSpy and search `CreateLobby`, `maxConnections`, `LobbyManager` for new guards after a game patch.
 3. File an issue with log snippets and player count.

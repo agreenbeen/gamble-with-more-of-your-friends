@@ -1,10 +1,12 @@
 GWYF Unlimited Players — install drop
 ======================================
 
+HOST-ONLY: whoever CREATES the lobby installs this bundle. Friends who only JOIN do not need BepInEx or this mod — vanilla join is OK.
+
 1) Copy **everything** in this folder into your **game directory** (the folder that contains Gamble With Your Friends.exe): merge / overwrite when prompted. You must end up with **winhttp.dll** and **doorstop_config.ini** next to the .exe, and **BepInEx\** including **plugins\GwyfUnlimitedPlayers.dll**.
 
 2) Read INSTALL.md here for config path, logs, and troubleshooting.
 
-3) Only the host must run this mod for the higher lobby cap; see VALIDATION.md and TARGETS.md for tests and patch notes.
+3) See VALIDATION.md and TARGETS.md for tests and patch notes.
 
 Note: This drop may include upstream **BepInEx 5.4.x** (LGPL-2.1). Source: https://github.com/BepInEx/BepInEx/releases
