@@ -2,6 +2,13 @@
 
 A **BepInEx** mod for *Gamble With Your Friends* (Steam, **Unity Mono**) so the **host** can run lobbies with **more than the default player cap** (default **12**, configurable **2–16**). It raises the **Steam lobby limit** and **Mirror** `NetworkManager.maxConnections`. Friends who only **join** do **not** need the mod for the higher cap to apply.
 
+## TL;DR — install from archive
+
+1. Download **[GWYF-UNLIMITED-players.v0.1.zip](https://github.com/agreenbeen/gamble-with-more-of-your-friends/releases/download/0.1/GWYF-UNLIMITED-players.v0.1.zip)**.
+2. In Steam: *Gamble With Your Friends* → **Manage** → **Browse local files** (open the folder that contains **`Gamble With Your Friends.exe`**).
+3. Extract everything from the zip **into that folder** (merge / overwrite). You should see **`winhttp.dll`** next to the `.exe` and **`BepInEx\plugins\GwyfUnlimitedPlayers.dll`**.
+4. Launch the game. Only the **host** needs this install for the raised lobby cap.
+
 **Repository:** [github.com/agreenbeen/gamble-with-more-of-your-friends](https://github.com/agreenbeen/gamble-with-more-of-your-friends)
 
 ---
